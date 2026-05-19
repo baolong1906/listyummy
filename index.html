@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sổ Công Thức">
+<title>Sổ Công Thức</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── TOKENS ── */
+  :root {
+    --bg:       #FDF7EE;
+    --card:     #FFFFFF;
+    --green:    #2A4D1E;
+    --green2:   #3D7A2B;
+    --terra:    #D95F2B;
+    --terra2:   #F2784B;
+    --text:     #1C2010;
+    --muted:    #7A876A;
+    --border:   #E8E0D0;
+    --tag-bg:   #EEF4E8;
+    --shadow:   0 2px 16px rgba(42,77,30,.10);
+    --radius:   16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--green);
+    color: #fff;
+    padding: 52px 20px 20px;
+    position: sticky; top: 0; z-index: 10;
+    box-shadow: 0 2px 12px rgba(0,0,0,.2);
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    letter-spacing: .5px;
+  }
+  header p { font-size: 13px; opacity: .7; margin-top: 2px; }
+
+  /* ── SEARCH ── */
+  .search-wrap { padding: 14px 16px 0; }
+  .search-wrap input {
+    width: 100%;
+    background: rgba(255,255,255,.12);
+    border: 1.5px solid rgba(255,255,255,.25);
+    border-radius: 12px;
+    padding: 10px 16px 10px 38px;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(255,255,255,.6)' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.868-3.833zm-5.24 1.13a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 12px center;
+  }
+  .search-wrap input::placeholder { color: rgba(255,255,255,.5); }
+
+  /* ── FILTER CHIPS ── */
+  .filters { padding: 12px 16px 0; display: flex; flex-direction: column; gap: 8px; }
+  .filter-label { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; opacity: .55; text-transform: uppercase; margin-left: 2px; }
+  .chips { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    border-radius: 50px;
+    background: rgba(255,255,255,.12);
+    border: 1.5px solid rgba(255,255,255,.2);
+    color: rgba(255,255,255,.8);
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .chip.active {
+    background: var(--terra);
+    border-color: var(--terra);
+    color: #fff;
+  }
+
+  /* ── MAIN CONTENT ── */
+  main { padding: 16px; }
+
+  .count-bar {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 12px; font-weight: 600;
+  }
+
+  /* ── DISH CARDS ── */
+  .grid { display: flex; flex-direction: column; gap: 10px; }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: transform .15s, box-shadow .15s;
+    border: 1.5px solid transparent;
+    animation: fadeUp .3s ease both;
+  }
+  .card:active { transform: scale(.98); }
+  .card.highlight { border-color: var(--terra2); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: var(--tag-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+  .card-body { flex: 1; min-width: 0; }
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px; font-weight: 700;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-tags { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
+  .tag {
+    font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px;
+    background: var(--tag-bg); color: var(--green2);
+  }
+  .tag.dm { background: #FEF0E8; color: var(--terra); }
+  .card-arrow { color: var(--muted); font-size: 18px; flex-shrink: 0; }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    text-align: center; padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty .emoji { font-size: 48px; margin-bottom: 12px; }
+  .empty p { font-size: 15px; }
+
+  /* ── LOADING ── */
+  .loading {
+    text-align: center; padding: 60px 20px;
+    color: var(--muted);
+  }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--green2);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── DETAIL PANEL ── */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 100;
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s;
+  }
+  .overlay.show { opacity: 1; pointer-events: all; }
+
+  .panel {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--bg);
+    border-radius: 24px 24px 0 0;
+    z-index: 101;
+    max-height: 92vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.32,1,.23,1);
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+  .panel.show { transform: translateY(0); }
+
+  .panel-handle {
+    width: 40px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 12px auto 0;
+  }
+
+  .panel-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0;
+    background: var(--bg);
+    z-index: 1;
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; font-weight: 700;
+    flex: 1; margin-right: 12px;
+    line-height: 1.3;
+  }
+  .close-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--border);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .panel-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+  .panel-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .section {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 6px rgba(0,0,0,.06);
+  }
+  .section-title {
+    font-size: 12px; font-weight: 800;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--green2); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .section-content {
+    font-size: 14.5px; line-height: 1.7;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+  .section-content.empty-section { color: var(--muted); font-style: italic; }
+
+  .section.note {
+    background: #FEF9EE;
+    border-left: 3px solid var(--terra2);
+  }
+  .section.note .section-title { color: var(--terra); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <h1>🍳 Sổ Công Thức</h1>
+  <p id="subtitle">Đang tải dữ liệu...</p>
+
+  <div class="search-wrap">
+    <input type="search" id="search" placeholder="Tìm món ăn..." oninput="applyFilters()">
+  </div>
+
+  <div class="filters">
+    <div>
+      <div class="filter-label">Phân loại</div>
+      <div class="chips" id="chips-phanloai"></div>
+    </div>
+    <div>
+      <div class="filter-label">Danh mục</div>
+      <div class="chips" id="chips-danhmuc"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Đang tải công thức...</p>
+  </div>
+  <div id="count-bar" class="count-bar" style="display:none"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<!-- OVERLAY + PANEL -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="panel" id="panel">
+  <div class="panel-handle"></div>
+  <div class="panel-header">
+    <div class="panel-title" id="panel-title"></div>
+    <button class="close-btn" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-body" id="panel-body"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  ⚙️  CHỈ SỬA DÒNG NÀY — Sheet ID của bạn
+// ══════════════════════════════════════════
+const SHEET_ID = "1U5qDEoir4y-sqdybS8C8XkMCl-Y46e49heu8Bv_w0dM";
+// Ví dụ: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms"
+
+// Cột trong sheet (0 = cột A)
+const COL = {
+  stt:      0,  // A
+  ten:      1,  // B - Tên món
+  phanloai: 2,  // C - Phân loại
+  danhmuc:  3,  // D - Danh mục
+  nguyenlieu: 4, // E
+  tamuo:    5,  // F - Tẩm ướp / sơ chế
+  cachnau:  6,  // G
+  luuy:     7,  // H - Lưu ý
+};
+
+// Emoji cho từng phân loại
+const EMOJI = {
+  "Gà": "🐔", "Lợn": "🐷", "Bò": "🐄",
+  "Vịt": "🦆", "Chim": "🐦", "Cá / Tôm": "🐟",
+  "Cá/Tôm": "🐟", "Canh": "🥣",
+};
+
+// ══════════════════════════════════════════
+let allRows = [];
+let activePL = "Tất cả";
+let activeDM = "Tất cả";
+
+// ── Parse CSV đúng chuẩn (xử lý dấu phẩy trong ngoặc kép) ──
+function parseCSV(text) {
+  const lines = text.trim().split("\n");
+  return lines.map(line => {
+    const cols = [];
+    let cur = "", inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+        else inQ = !inQ;
+      } else if (ch === ',' && !inQ) {
+        cols.push(cur.trim()); cur = "";
+      } else { cur += ch; }
+    }
+    cols.push(cur.trim());
+    return cols;
+  });
+}
+
+// ── Fetch Sheet ──
+async function loadSheet() {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Không tải được sheet");
+    const text = await res.text();
+    const rows = parseCSV(text);
+    // Bỏ header row, lọc dòng có dữ liệu
+    allRows = rows.slice(1).filter(r => r[COL.ten] && r[COL.ten].trim());
+    buildFilters();
+    applyFilters();
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("count-bar").style.display = "block";
+    document.getElementById("subtitle").textContent = `${allRows.length} công thức`;
+  } catch(e) {
+    document.getElementById("loading").innerHTML =
+      `<div class="emoji">⚠️</div><p>Không tải được dữ liệu.<br>Kiểm tra Sheet ID và quyền public.</p>`;
+    console.error(e);
+  }
+}
+
+// ── Build filter chips ──
+function buildFilters() {
+  const pls = ["Tất cả", ...new Set(allRows.map(r => r[COL.phanloai]?.trim()).filter(Boolean))];
+  const dms = ["Tất cả", ...new Set(allRows.map(r => r[COL.danhmuc]?.trim()).filter(Boolean))];
+
+  renderChips("chips-phanloai", pls, "pl");
+  renderChips("chips-danhmuc", dms, "dm");
+}
+
+function renderChips(containerId, items, type) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+  items.forEach(item => {
+    const btn = document.createElement("button");
+    btn.className = "chip" + (item === "Tất cả" ? " active" : "");
+    btn.textContent = item;
+    btn.onclick = () => selectChip(type, item, btn, el);
+    el.appendChild(btn);
+  });
+}
+
+function selectChip(type, val, btn, container) {
+  container.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+  btn.classList.add("active");
+  if (type === "pl") activePL = val;
+  else activeDM = val;
+  applyFilters();
+}
+
+// ── Filter + render ──
+function applyFilters() {
+  const q = (document.getElementById("search")?.value || "").toLowerCase().trim();
+  let filtered = allRows.filter(r => {
+    const pl = r[COL.phanloai]?.trim() || "";
+    const dm = r[COL.danhmuc]?.trim() || "";
+    const ten = r[COL.ten]?.trim().toLowerCase() || "";
+    if (activePL !== "Tất cả" && pl !== activePL) return false;
+    if (activeDM !== "Tất cả" && dm !== activeDM) return false;
+    if (q && !ten.includes(q)) return false;
+    return true;
+  });
+
+  document.getElementById("count-bar").textContent = `${filtered.length} món`;
+  renderGrid(filtered);
+}
+
+function renderGrid(rows) {
+  const grid = document.getElementById("grid");
+  if (rows.length === 0) {
+    grid.innerHTML = `<div class="empty"><div class="emoji">🔍</div><p>Không tìm thấy món nào</p></div>`;
+    return;
+  }
+  grid.innerHTML = "";
+  rows.forEach((r, i) => {
+    const ten = r[COL.ten]?.trim() || "";
+    const pl  = r[COL.phanloai]?.trim() || "";
+    const dm  = r[COL.danhmuc]?.trim() || "";
+    const emoji = EMOJI[pl] || "🍽";
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.style.animationDelay = `${Math.min(i * 40, 300)}ms`;
+    card.innerHTML = `
+      <div class="card-icon">${emoji}</div>
+      <div class="card-body">
+        <div class="card-name">${ten}</div>
+        <div class="card-tags">
+          ${pl ? `<span class="tag">${pl}</span>` : ""}
+          ${dm ? `<span class="tag dm">${dm}</span>` : ""}
+        </div>
+      </div>
+      <span class="card-arrow">›</span>
+    `;
+    card.onclick = () => openPanel(r);
+    grid.appendChild(card);
+  });
+}
+
+// ── Detail panel ──
+function openPanel(r) {
+  const ten = r[COL.ten]?.trim() || "";
+  const pl  = r[COL.phanloai]?.trim() || "";
+  const dm  = r[COL.danhmuc]?.trim() || "";
+  const nl  = r[COL.nguyenlieu]?.trim() || "";
+  const tu  = r[COL.tamuo]?.trim() || "";
+  const cn  = r[COL.cachnau]?.trim() || "";
+  const lu  = r[COL.luuy]?.trim() || "";
+  const emoji = EMOJI[pl] || "🍽";
+
+  document.getElementById("panel-title").textContent = `${emoji} ${ten}`;
+
+  const sections = [
+    { icon: "🧺", label: "Nguyên liệu",         text: nl },
+    { icon: "🥄", label: "Tẩm ướp / Sơ chế",   text: tu },
+    { icon: "🔥", label: "Cách nấu",             text: cn },
+  ];
+
+  let html = `<div class="panel-tags">
+    ${pl ? `<span class="tag">${pl}</span>` : ""}
+    ${dm ? `<span class="tag dm">${dm}</span>` : ""}
+  </div>`;
+
+  sections.forEach(s => {
+    const isEmpty = !s.text;
+    html += `
+      <div class="section">
+        <div class="section-title">${s.icon} ${s.label}</div>
+        <div class="section-content ${isEmpty ? "empty-section" : ""}">
+          ${isEmpty ? "Chưa có thông tin" : escHtml(s.text)}
+        </div>
+      </div>`;
+  });
+
+  if (lu) {
+    html += `
+      <div class="section note">
+        <div class="section-title">💡 Lưu ý / Phản hồi</div>
+        <div class="section-content">${escHtml(lu)}</div>
+      </div>`;
+  }
+
+  document.getElementById("panel-body").innerHTML = html;
+  document.getElementById("overlay").classList.add("show");
+  document.getElementById("panel").classList.add("show");
+  document.body.style.overflow = "hidden";
+}
+
+function closePanel() {
+  document.getElementById("overlay").classList.remove("show");
+  document.getElementById("panel").classList.remove("show");
+  document.body.style.overflow = "";
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// Swipe down to close panel
+let startY = 0;
+document.getElementById("panel").addEventListener("touchstart", e => {
+  startY = e.touches[0].clientY;
+}, { passive: true });
+document.getElementById("panel").addEventListener("touchend", e => {
+  if (e.changedTouches[0].clientY - startY > 80) closePanel();
+}, { passive: true });
+
+// ── Init ──
+loadSheet();
+</script>
+</body>
+</html>
