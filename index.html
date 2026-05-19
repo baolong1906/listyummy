@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Sổ Công Thức">
-<title>Sổ Công Thức</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="apple-mobile-web-app-title" content="Công thức Kiều Long">
+<title>Công thức món ăn của Kiều Long</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   /* ── TOKENS ── */
   :root {
@@ -28,30 +28,35 @@
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
   body {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* ── HEADER ── */
+  /* ── HEADER — ẩn khi cuộn xuống ── */
   header {
     background: var(--green);
     color: #fff;
-    padding: 52px 20px 20px;
+    padding: 52px 20px 16px;
     position: sticky; top: 0; z-index: 10;
     box-shadow: 0 2px 12px rgba(0,0,0,.2);
+    transition: transform .3s ease;
   }
+  header.hide { transform: translateY(-100%); }
+
   header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 26px;
-    letter-spacing: .5px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -.3px;
+    line-height: 1.2;
   }
-  header p { font-size: 13px; opacity: .7; margin-top: 2px; }
+  header p { font-size: 14px; opacity: .7; margin-top: 3px; font-weight: 500; }
 
   /* ── SEARCH ── */
-  .search-wrap { padding: 14px 16px 0; }
+  .search-wrap { padding: 12px 16px 0; }
   .search-wrap input {
     width: 100%;
     background: rgba(255,255,255,.12);
@@ -59,8 +64,9 @@
     border-radius: 12px;
     padding: 10px 16px 10px 38px;
     color: #fff;
-    font-family: 'Nunito', sans-serif;
-    font-size: 15px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
     outline: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(255,255,255,.6)' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.868-3.833zm-5.24 1.13a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -69,7 +75,7 @@
   .search-wrap input::placeholder { color: rgba(255,255,255,.5); }
 
   /* ── FILTER CHIPS ── */
-  .filters { padding: 12px 16px 0; display: flex; flex-direction: column; gap: 8px; }
+  .filters { padding: 10px 16px 0; display: flex; flex-direction: column; gap: 8px; }
   .filter-label { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; opacity: .55; text-transform: uppercase; margin-left: 2px; }
   .chips { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
   .chips::-webkit-scrollbar { display: none; }
@@ -80,8 +86,8 @@
     background: rgba(255,255,255,.12);
     border: 1.5px solid rgba(255,255,255,.2);
     color: rgba(255,255,255,.8);
-    font-family: 'Nunito', sans-serif;
-    font-size: 13px; font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px; font-weight: 600;
     cursor: pointer;
     transition: all .2s;
     white-space: nowrap;
@@ -96,7 +102,7 @@
   main { padding: 16px; }
 
   .count-bar {
-    font-size: 13px; color: var(--muted);
+    font-size: 15px; color: var(--muted);
     margin-bottom: 12px; font-weight: 600;
   }
 
@@ -125,26 +131,26 @@
   }
 
   .card-icon {
-    width: 48px; height: 48px;
+    width: 50px; height: 50px;
     border-radius: 12px;
     background: var(--tag-bg);
     display: flex; align-items: center; justify-content: center;
-    font-size: 24px; flex-shrink: 0;
+    font-size: 26px; flex-shrink: 0;
   }
   .card-body { flex: 1; min-width: 0; }
   .card-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 16px; font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 17px; font-weight: 700;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .card-tags { display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap; }
   .tag {
-    font-size: 11px; font-weight: 700;
+    font-size: 12px; font-weight: 700;
     padding: 2px 8px; border-radius: 20px;
     background: var(--tag-bg); color: var(--green2);
   }
   .tag.dm { background: #FEF0E8; color: var(--terra); }
-  .card-arrow { color: var(--muted); font-size: 18px; flex-shrink: 0; }
+  .card-arrow { color: var(--muted); font-size: 20px; flex-shrink: 0; }
 
   /* ── EMPTY STATE ── */
   .empty {
@@ -152,7 +158,7 @@
     color: var(--muted);
   }
   .empty .emoji { font-size: 48px; margin-bottom: 12px; }
-  .empty p { font-size: 15px; }
+  .empty p { font-size: 17px; }
 
   /* ── LOADING ── */
   .loading {
@@ -186,6 +192,8 @@
     z-index: 101;
     max-height: 92vh;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     transform: translateY(100%);
     transition: transform .35s cubic-bezier(.32,1,.23,1);
     padding-bottom: env(safe-area-inset-bottom, 20px);
@@ -200,7 +208,7 @@
   }
 
   .panel-header {
-    padding: 16px 20px 12px;
+    padding: 14px 20px 12px;
     border-bottom: 1px solid var(--border);
     position: sticky; top: 0;
     background: var(--bg);
@@ -208,13 +216,13 @@
     display: flex; justify-content: space-between; align-items: flex-start;
   }
   .panel-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px; font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px; font-weight: 800;
     flex: 1; margin-right: 12px;
     line-height: 1.3;
   }
   .close-btn {
-    width: 32px; height: 32px;
+    width: 34px; height: 34px;
     border-radius: 50%;
     background: var(--border);
     border: none; cursor: pointer;
@@ -223,26 +231,27 @@
     flex-shrink: 0;
   }
 
-  .panel-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+  .panel-body { padding: 12px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
 
-  .panel-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .panel-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 2px; }
 
   .section {
     background: var(--card);
     border-radius: 14px;
-    padding: 14px 16px;
+    padding: 12px 14px;
     box-shadow: 0 1px 6px rgba(0,0,0,.06);
   }
   .section-title {
     font-size: 12px; font-weight: 800;
     letter-spacing: 1px; text-transform: uppercase;
-    color: var(--green2); margin-bottom: 8px;
-    display: flex; align-items: center; gap: 6px;
+    color: var(--green2); margin-bottom: 4px;
+    display: flex; align-items: center; gap: 5px;
   }
   .section-content {
-    font-size: 14.5px; line-height: 1.7;
+    font-size: 16px; line-height: 1.6;
     color: var(--text);
     white-space: pre-wrap;
+    font-weight: 500;
   }
   .section-content.empty-section { color: var(--muted); font-style: italic; }
 
@@ -251,13 +260,16 @@
     border-left: 3px solid var(--terra2);
   }
   .section.note .section-title { color: var(--terra); }
+
+  /* iOS scroll lock */
+  body.panel-open { overflow: hidden; position: fixed; width: 100%; }
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <header>
-  <h1>🍳 Sổ Công Thức</h1>
+  <h1>🍳 Công thức món ăn của Kiều Long</h1>
   <p id="subtitle">Đang tải dữ liệu...</p>
 
   <div class="search-wrap">
@@ -300,7 +312,7 @@
 // ══════════════════════════════════════════
 //  ⚙️  CHỈ SỬA DÒNG NÀY — Sheet ID của bạn
 // ══════════════════════════════════════════
-const SHEET_ID = "1U5qDEoir4y-sqdybS8C8XkMCl-Y46e49heu8Bv_w0dM";
+const SHEET_ID = "PASTE_SHEET_ID_CỦA_BẠN_VÀO_ĐÂY";
 // Ví dụ: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms"
 
 // Cột trong sheet (0 = cột A)
@@ -349,7 +361,7 @@ function parseCSV(text) {
 
 // ── Fetch Sheet ──
 async function loadSheet() {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1699078035`;
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error("Không tải được sheet");
@@ -493,13 +505,26 @@ function openPanel(r) {
   document.getElementById("panel-body").innerHTML = html;
   document.getElementById("overlay").classList.add("show");
   document.getElementById("panel").classList.add("show");
-  document.body.style.overflow = "hidden";
+  openPanelLock();
+}
+
+// ── iOS-safe scroll lock ──
+let scrollLockTop = 0;
+function openPanelLock() {
+  scrollLockTop = window.scrollY;
+  document.body.classList.add("panel-open");
+  document.body.style.top = `-${scrollLockTop}px`;
+}
+function closePanelLock() {
+  document.body.classList.remove("panel-open");
+  document.body.style.top = "";
+  window.scrollTo(0, scrollLockTop);
 }
 
 function closePanel() {
   document.getElementById("overlay").classList.remove("show");
   document.getElementById("panel").classList.remove("show");
-  document.body.style.overflow = "";
+  closePanelLock();
 }
 
 function escHtml(str) {
@@ -513,6 +538,16 @@ document.getElementById("panel").addEventListener("touchstart", e => {
 }, { passive: true });
 document.getElementById("panel").addEventListener("touchend", e => {
   if (e.changedTouches[0].clientY - startY > 80) closePanel();
+}, { passive: true });
+
+// ── Header ẩn khi cuộn xuống, hiện khi cuộn lên ──
+let lastScroll = 0;
+window.addEventListener("scroll", () => {
+  const cur = window.scrollY;
+  const header = document.querySelector("header");
+  if (cur > lastScroll && cur > 80) header.classList.add("hide");
+  else header.classList.remove("hide");
+  lastScroll = cur;
 }, { passive: true });
 
 // ── Init ──
