@@ -40,11 +40,8 @@
     background: var(--green);
     color: #fff;
     padding: 52px 20px 16px;
-    position: sticky; top: 0; z-index: 10;
     box-shadow: 0 2px 12px rgba(0,0,0,.2);
-    transition: transform .3s ease;
   }
-  header.hide { transform: translateY(-100%); }
 
   header h1 {
     font-family: 'Montserrat', sans-serif;
@@ -522,15 +519,6 @@ document.getElementById("panel").addEventListener("touchstart", e => {
 }, { passive: true });
 document.getElementById("panel").addEventListener("touchend", e => {
   if (e.changedTouches[0].clientY - startY > 80) closePanel();
-}, { passive: true });
-
-let lastScroll = 0;
-window.addEventListener("scroll", () => {
-  const cur = window.scrollY;
-  const header = document.querySelector("header");
-  if (cur > lastScroll && cur > 80) header.classList.add("hide");
-  else header.classList.remove("hide");
-  lastScroll = cur;
 }, { passive: true });
 
 loadSheet();
