@@ -146,6 +146,7 @@
     background: var(--tag-bg); color: var(--green2);
   }
   .tag.dm { background: #FEF0E8; color: var(--terra); }
+  .tag.dc { background: #EEF0FE; color: #4A5ACA; }
   .card-arrow { color: var(--muted); font-size: 20px; flex-shrink: 0; }
 
   .empty {
@@ -272,6 +273,10 @@
       <div class="filter-label">Danh mục</div>
       <div class="chips" id="chips-danhmuc"></div>
     </div>
+    <div>
+      <div class="filter-label">Đi chợ chiều / Tẩm ướp</div>
+      <div class="chips" id="chips-dichochieu"></div>
+    </div>
   </div>
 </header>
 
@@ -298,14 +303,15 @@
 const SHEET_ID = "1U5qDEoir4y-sqdybS8C8XkMCl-Y46e49heu8Bv_w0dM";
 
 const COL = {
-  stt:      0,
-  ten:      1,
-  phanloai: 2,
-  danhmuc:  3,
-  nguyenlieu: 4,
-  tamuo:    5,
-  cachnau:  6,
-  luuy:     7,
+  stt:        0,
+  ten:        1,
+  phanloai:   2,
+  danhmuc:    3,
+  dichochieu: 4,
+  nguyenlieu: 5,
+  tamuo:      6,
+  cachnau:    7,
+  luuy:       8,
 };
 
 const EMOJI = {
@@ -317,6 +323,7 @@ const EMOJI = {
 let allRows = [];
 let activePL = "Tất cả";
 let activeDM = "Tất cả";
+let activeDC = "Tất cả";
 
 function parseCSV(text) {
   const lines = text.trim().split("\n");
@@ -360,8 +367,10 @@ async function loadSheet() {
 function buildFilters() {
   const pls = ["Tất cả", ...new Set(allRows.map(r => r[COL.phanloai]?.trim()).filter(Boolean))];
   const dms = ["Tất cả", ...new Set(allRows.map(r => r[COL.danhmuc]?.trim()).filter(Boolean))];
+  const dcs = ["Tất cả", ...new Set(allRows.map(r => r[COL.dichochieu]?.trim()).filter(Boolean))];
   renderChips("chips-phanloai", pls, "pl");
   renderChips("chips-danhmuc", dms, "dm");
+  renderChips("chips-dichochieu", dcs, "dc");
 }
 
 function renderChips(containerId, items, type) {
@@ -380,7 +389,8 @@ function selectChip(type, val, btn, container) {
   container.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
   btn.classList.add("active");
   if (type === "pl") activePL = val;
-  else activeDM = val;
+  else if (type === "dm") activeDM = val;
+  else activeDC = val;
   applyFilters();
 }
 
@@ -389,9 +399,11 @@ function applyFilters() {
   let filtered = allRows.filter(r => {
     const pl = r[COL.phanloai]?.trim() || "";
     const dm = r[COL.danhmuc]?.trim() || "";
+    const dc = r[COL.dichochieu]?.trim() || "";
     const ten = r[COL.ten]?.trim().toLowerCase() || "";
     if (activePL !== "Tất cả" && pl !== activePL) return false;
     if (activeDM !== "Tất cả" && dm !== activeDM) return false;
+    if (activeDC !== "Tất cả" && dc !== activeDC) return false;
     if (q && !ten.includes(q)) return false;
     return true;
   });
@@ -411,6 +423,7 @@ function renderGrid(rows) {
     const ten = r[COL.ten]?.trim() || "";
     const pl  = r[COL.phanloai]?.trim() || "";
     const dm  = r[COL.danhmuc]?.trim() || "";
+    const dc  = r[COL.dichochieu]?.trim() || "";
     const emoji = EMOJI[pl] || "🍽";
 
     const card = document.createElement("div");
@@ -423,6 +436,7 @@ function renderGrid(rows) {
         <div class="card-tags">
           ${pl ? `<span class="tag">${pl}</span>` : ""}
           ${dm ? `<span class="tag dm">${dm}</span>` : ""}
+          ${dc ? `<span class="tag dc">${dc}</span>` : ""}
         </div>
       </div>
       <span class="card-arrow">›</span>
@@ -436,6 +450,7 @@ function openPanel(r) {
   const ten = r[COL.ten]?.trim() || "";
   const pl  = r[COL.phanloai]?.trim() || "";
   const dm  = r[COL.danhmuc]?.trim() || "";
+  const dc  = r[COL.dichochieu]?.trim() || "";
   const nl  = r[COL.nguyenlieu]?.trim() || "";
   const tu  = r[COL.tamuo]?.trim() || "";
   const cn  = r[COL.cachnau]?.trim() || "";
@@ -453,6 +468,7 @@ function openPanel(r) {
   let html = `<div class="panel-tags">
     ${pl ? `<span class="tag">${pl}</span>` : ""}
     ${dm ? `<span class="tag dm">${dm}</span>` : ""}
+    ${dc ? `<span class="tag dc">${dc}</span>` : ""}
   </div>`;
 
   sections.forEach(s => {
