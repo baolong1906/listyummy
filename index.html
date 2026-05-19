@@ -232,26 +232,20 @@
     padding: 12px 14px;
     box-shadow: 0 1px 6px rgba(0,0,0,.06);
   }
-  /* ── THAY ĐỔI: font đầu mục +2 cỡ (12→14px) ── */
   .section-title {
-    font-size: 14px; font-weight: 800;
+    font-size: 18px; font-weight: 800;
     letter-spacing: 1px; text-transform: uppercase;
     color: var(--green2); margin-bottom: 6px;
     display: flex; align-items: center; gap: 5px;
   }
-  /* ── THAY ĐỔI: font nội dung +2 cỡ (16→18px), bỏ khoảng trắng thừa ── */
   .section-content {
     font-size: 18px; line-height: 1.6;
     color: var(--text);
-    white-space: pre-line;
+    white-space: normal;
     font-weight: 500;
   }
   .section-content.empty-section { color: var(--muted); font-style: italic; }
 
-  .section.note {
-    background: #FEF9EE;
-    border-left: 3px solid var(--terra2);
-  }
   .section.note .section-title { color: var(--terra); }
 
   body.panel-open { overflow: hidden; position: fixed; width: 100%; }
@@ -464,9 +458,7 @@ function openPanel(r) {
     html += `
       <div class="section">
         <div class="section-title">${s.icon} ${s.label}</div>
-        <div class="section-content ${isEmpty ? "empty-section" : ""}">
-          ${isEmpty ? "Chưa có thông tin" : escHtml(s.text)}
-        </div>
+        <div class="section-content ${isEmpty ? "empty-section" : ""}">${isEmpty ? "Chưa có thông tin" : escHtml(s.text)}</div>
       </div>`;
   });
 
