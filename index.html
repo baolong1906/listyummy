@@ -9,7 +9,6 @@
 <title>Công thức món ăn của Kiều Long</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  /* ── TOKENS ── */
   :root {
     --bg:       #FDF7EE;
     --card:     #FFFFFF;
@@ -35,7 +34,6 @@
     overflow-x: hidden;
   }
 
-  /* ── HEADER — ẩn khi cuộn xuống ── */
   header {
     background: var(--green);
     color: #fff;
@@ -55,7 +53,6 @@
   }
   header p { font-size: 14px; opacity: .7; margin-top: 3px; font-weight: 500; }
 
-  /* ── SEARCH ── */
   .search-wrap { padding: 12px 16px 0; }
   .search-wrap input {
     width: 100%;
@@ -74,7 +71,6 @@
   }
   .search-wrap input::placeholder { color: rgba(255,255,255,.5); }
 
-  /* ── FILTER CHIPS ── */
   .filters { padding: 10px 16px 0; display: flex; flex-direction: column; gap: 8px; }
   .filter-label { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; opacity: .55; text-transform: uppercase; margin-left: 2px; }
   .chips { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
@@ -98,7 +94,6 @@
     color: #fff;
   }
 
-  /* ── MAIN CONTENT ── */
   main { padding: 16px; }
 
   .count-bar {
@@ -106,7 +101,6 @@
     margin-bottom: 12px; font-weight: 600;
   }
 
-  /* ── DISH CARDS ── */
   .grid { display: flex; flex-direction: column; gap: 10px; }
 
   .card {
@@ -152,7 +146,6 @@
   .tag.dm { background: #FEF0E8; color: var(--terra); }
   .card-arrow { color: var(--muted); font-size: 20px; flex-shrink: 0; }
 
-  /* ── EMPTY STATE ── */
   .empty {
     text-align: center; padding: 60px 20px;
     color: var(--muted);
@@ -160,7 +153,6 @@
   .empty .emoji { font-size: 48px; margin-bottom: 12px; }
   .empty p { font-size: 17px; }
 
-  /* ── LOADING ── */
   .loading {
     text-align: center; padding: 60px 20px;
     color: var(--muted);
@@ -175,7 +167,6 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ── DETAIL PANEL ── */
   .overlay {
     position: fixed; inset: 0;
     background: rgba(0,0,0,.45);
@@ -241,16 +232,18 @@
     padding: 12px 14px;
     box-shadow: 0 1px 6px rgba(0,0,0,.06);
   }
+  /* ── THAY ĐỔI: font đầu mục +2 cỡ (12→14px) ── */
   .section-title {
-    font-size: 12px; font-weight: 800;
+    font-size: 14px; font-weight: 800;
     letter-spacing: 1px; text-transform: uppercase;
-    color: var(--green2); margin-bottom: 4px;
+    color: var(--green2); margin-bottom: 6px;
     display: flex; align-items: center; gap: 5px;
   }
+  /* ── THAY ĐỔI: font nội dung +2 cỡ (16→18px), bỏ khoảng trắng thừa ── */
   .section-content {
-    font-size: 16px; line-height: 1.6;
+    font-size: 18px; line-height: 1.6;
     color: var(--text);
-    white-space: pre-wrap;
+    white-space: pre-line;
     font-weight: 500;
   }
   .section-content.empty-section { color: var(--muted); font-style: italic; }
@@ -261,13 +254,11 @@
   }
   .section.note .section-title { color: var(--terra); }
 
-  /* iOS scroll lock */
   body.panel-open { overflow: hidden; position: fixed; width: 100%; }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <h1>🍳 Công thức món ăn của Kiều Long</h1>
   <p id="subtitle">Đang tải dữ liệu...</p>
@@ -297,7 +288,6 @@
   <div class="grid" id="grid"></div>
 </main>
 
-<!-- OVERLAY + PANEL -->
 <div class="overlay" id="overlay" onclick="closePanel()"></div>
 <div class="panel" id="panel">
   <div class="panel-handle"></div>
@@ -309,37 +299,29 @@
 </div>
 
 <script>
-// ══════════════════════════════════════════
-//  ⚙️  CHỈ SỬA DÒNG NÀY — Sheet ID của bạn
-// ══════════════════════════════════════════
 const SHEET_ID = "1U5qDEoir4y-sqdybS8C8XkMCl-Y46e49heu8Bv_w0dM";
-// Ví dụ: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms"
 
-// Cột trong sheet (0 = cột A)
 const COL = {
-  stt:      0,  // A
-  ten:      1,  // B - Tên món
-  phanloai: 2,  // C - Phân loại
-  danhmuc:  3,  // D - Danh mục
-  nguyenlieu: 4, // E
-  tamuo:    5,  // F - Tẩm ướp / sơ chế
-  cachnau:  6,  // G
-  luuy:     7,  // H - Lưu ý
+  stt:      0,
+  ten:      1,
+  phanloai: 2,
+  danhmuc:  3,
+  nguyenlieu: 4,
+  tamuo:    5,
+  cachnau:  6,
+  luuy:     7,
 };
 
-// Emoji cho từng phân loại
 const EMOJI = {
   "Gà": "🐔", "Lợn": "🐷", "Bò": "🐄",
   "Vịt": "🦆", "Chim": "🐦", "Cá / Tôm": "🐟",
   "Cá/Tôm": "🐟", "Canh": "🥣",
 };
 
-// ══════════════════════════════════════════
 let allRows = [];
 let activePL = "Tất cả";
 let activeDM = "Tất cả";
 
-// ── Parse CSV đúng chuẩn (xử lý dấu phẩy trong ngoặc kép) ──
 function parseCSV(text) {
   const lines = text.trim().split("\n");
   return lines.map(line => {
@@ -359,7 +341,6 @@ function parseCSV(text) {
   });
 }
 
-// ── Fetch Sheet ──
 async function loadSheet() {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1699078035`;
   try {
@@ -367,7 +348,6 @@ async function loadSheet() {
     if (!res.ok) throw new Error("Không tải được sheet");
     const text = await res.text();
     const rows = parseCSV(text);
-    // Bỏ header row, lọc dòng có dữ liệu
     allRows = rows.slice(1).filter(r => r[COL.ten] && r[COL.ten].trim());
     buildFilters();
     applyFilters();
@@ -381,11 +361,9 @@ async function loadSheet() {
   }
 }
 
-// ── Build filter chips ──
 function buildFilters() {
   const pls = ["Tất cả", ...new Set(allRows.map(r => r[COL.phanloai]?.trim()).filter(Boolean))];
   const dms = ["Tất cả", ...new Set(allRows.map(r => r[COL.danhmuc]?.trim()).filter(Boolean))];
-
   renderChips("chips-phanloai", pls, "pl");
   renderChips("chips-danhmuc", dms, "dm");
 }
@@ -410,7 +388,6 @@ function selectChip(type, val, btn, container) {
   applyFilters();
 }
 
-// ── Filter + render ──
 function applyFilters() {
   const q = (document.getElementById("search")?.value || "").toLowerCase().trim();
   let filtered = allRows.filter(r => {
@@ -459,7 +436,6 @@ function renderGrid(rows) {
   });
 }
 
-// ── Detail panel ──
 function openPanel(r) {
   const ten = r[COL.ten]?.trim() || "";
   const pl  = r[COL.phanloai]?.trim() || "";
@@ -508,7 +484,6 @@ function openPanel(r) {
   openPanelLock();
 }
 
-// ── iOS-safe scroll lock ──
 let scrollLockTop = 0;
 function openPanelLock() {
   scrollLockTop = window.scrollY;
@@ -531,7 +506,6 @@ function escHtml(str) {
   return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
-// Swipe down to close panel
 let startY = 0;
 document.getElementById("panel").addEventListener("touchstart", e => {
   startY = e.touches[0].clientY;
@@ -540,7 +514,6 @@ document.getElementById("panel").addEventListener("touchend", e => {
   if (e.changedTouches[0].clientY - startY > 80) closePanel();
 }, { passive: true });
 
-// ── Header ẩn khi cuộn xuống, hiện khi cuộn lên ──
 let lastScroll = 0;
 window.addEventListener("scroll", () => {
   const cur = window.scrollY;
@@ -550,7 +523,6 @@ window.addEventListener("scroll", () => {
   lastScroll = cur;
 }, { passive: true });
 
-// ── Init ──
 loadSheet();
 </script>
 </body>
